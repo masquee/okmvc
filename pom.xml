@@ -6,11 +6,10 @@
 
     <groupId>okmvc</groupId>
     <artifactId>okmvc</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <dependencies>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -39,7 +38,11 @@
             <version>1.16.18</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -66,9 +69,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>okmvc</finalName>
-
     </build>
-
 
 </project>

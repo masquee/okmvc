@@ -4,10 +4,12 @@ package okmvc.core;
 import lombok.Getter;
 import lombok.Setter;
 import okmvc.annotation.*;
+import okmvc.exception.InitializingException;
+import okmvc.exception.ReflectionException;
 import okmvc.mvc.Handler;
 import okmvc.mvc.Request;
 import okmvc.util.ClassUtils;
-import okmvc.util.PropertiesUtils;
+import okmvc.util.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,7 @@ public final class Container {
     private Map<Request, Handler> handlerMapping = new HashMap<>();
 
     public void init() throws ClassNotFoundException {
-        String packageName = PropertiesUtils.getRootPackage();
+        String packageName = PropertyUtils.getRootPackageName();
         List<String> classNames = ClassUtils.listClassNames(packageName);
         ClassLoader classLoader = ClassUtils.getClassLoader();
         for (String name : classNames) {
@@ -52,6 +54,7 @@ public final class Container {
         initHandlerMapping();
     }
 
+    // TODO 注入功能目前只支持向Controller中注入Service，待扩展
     private void inject() {
         for (Map.Entry<Class<?>, Object> entry : controllerMap.entrySet()) {
             Class<?> clazz = entry.getKey();
@@ -62,13 +65,13 @@ public final class Container {
                 Class<?> fieldType = field.getType();
                 Object fieldValue = serviceMap.get(fieldType);
                 if (fieldValue == null) {
-                    throw new RuntimeException("cannot autowired property: " + field.getName());
+                    throw new InitializingException("cannot autowired property: " + field.getName());
                 }
                 field.setAccessible(true);
                 try {
                     field.set(instance, fieldValue);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException("cannot autowired property: " + field.getName());
+                    throw new ReflectionException("cannot set property: " + field.getName());
                 }
                 LOG.debug("inject property [{}] of bean [{}] successful", field.getName(), clazz.getSimpleName());
             }

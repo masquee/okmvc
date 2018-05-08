@@ -1,5 +1,7 @@
 package okmvc.util;
 
+import okmvc.exception.InitializingException;
+import okmvc.exception.ReflectionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
+// TODO refactor
 public class ClassUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClassUtils.class);
@@ -20,7 +24,7 @@ public class ClassUtils {
         String packagePath = classpath + packageName.replace(".", "/");
         File dir = new File(packagePath);
         if (dir.isFile()) {
-            throw new RuntimeException("config error: invalid root.package config");
+            throw new InitializingException("config error: invalid root.package config");
         }
         Collection<File> files = FileUtils.listFiles(dir, new IOFileFilter() {
             @Override
@@ -64,7 +68,7 @@ public class ClassUtils {
         try {
             object = clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("cannot instantiate class " + clazz.getName());
+            throw new ReflectionException("cannot instantiate class " + clazz.getName());
         }
         return object;
     }

@@ -2,6 +2,7 @@ package okmvc.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okmvc.core.Container;
+import okmvc.exception.InitializingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,7 @@ public class DispatcherServlet extends HttpServlet {
         try {
             container.init();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new InitializingException(e);
         }
     }
 
@@ -47,7 +48,7 @@ public class DispatcherServlet extends HttpServlet {
             String name = entry.getKey();
             String[] value = entry.getValue();
             if (value == null || value.length == 0) continue;
-            param.put(name, value[0]);
+            param.put(name, value[0]);  // TODO
         }
         Object result;
         try {
